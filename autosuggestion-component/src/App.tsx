@@ -1,35 +1,34 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import AutoComplete from './components/AutoComplete';
+import './App.css';
+
+// https://dummyjson.com/recipes/search?q
 
 function App() {
-  const [count, setCount] = useState(0)
+  const fetchSuggestions = async (query: string) => {
+    const response = await fetch(
+      `https://dummyjson.com/recipes/search?q=${query}`
+    );
+    if (!response.ok) {
+      throw new Error('Network Error!');
+    }
+    const results = await response.json();
+    return results.recipes;
+  };
 
+  // const onChange = (value: string) => {
+  //   console.log(value);
+  // };
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <AutoComplete
+        placeholder={'Type recipe name'}
+        dataKey={'name'}
+        fetchSuggestions={fetchSuggestions}
+        onSelect={(res) => console.log('payload', res)}
+        customLoading={<>Loading...</>}
+      />
     </>
-  )
+  );
 }
 
-export default App
+export default App;
