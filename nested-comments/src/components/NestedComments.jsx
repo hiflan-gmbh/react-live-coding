@@ -4,7 +4,12 @@ import useCommentTree from '../hooks/useCommentTree';
 import './styles.css';
 
 const NestedComments = ({ comments = [] }) => {
-  const { comments: commentData, insertComment } = useCommentTree(comments);
+  const {
+    comments: commentData,
+    insertComment,
+    editComment,
+    deleteComment,
+  } = useCommentTree(comments);
   const [comment, setComment] = useState('');
 
   const onComment = (commentId, content) => {
@@ -13,6 +18,14 @@ const NestedComments = ({ comments = [] }) => {
   };
   const onChange = (e) => {
     setComment(e.target.value);
+  };
+
+  const onCommentEdit = (commentId, content) => {
+    editComment(commentId, content);
+  };
+
+  const onCommentDelete = (commentId) => {
+    deleteComment(commentId);
   };
 
   const onCommentSubmit = () => {
@@ -43,8 +56,8 @@ const NestedComments = ({ comments = [] }) => {
             key={comment.id}
             comment={comment}
             onReply={onComment}
-            onEdit={() => {}}
-            onDelete={() => {}}
+            onEdit={onCommentEdit}
+            onDelete={onCommentDelete}
           />
         );
       })}

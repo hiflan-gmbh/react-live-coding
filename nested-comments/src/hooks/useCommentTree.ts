@@ -36,9 +36,48 @@ const useCommentTree = (initialComments) => {
       setComments((prevComments) => [...prevComments, newComment]);
     }
   };
+  const editNode = (nodes, commentId, content) => {
+    return nodes.map((node) => {
+      if (node.id === commentId) {
+        console.log('editNode', node.id, commentId, content);
+        return {
+          ...node,
+          content,
+          timestamp: new Date().toISOString(),
+        };
+      } else if (node.replies && node.replies.length > 0) {
+        return {
+          ...node,
+          replies: editNode(node.replies, commentId, content),
+        };
+      }
+      return node;
+    });
+  };
+
+  const editComment = (commentId, content) => {
+    setComments((prevComments) => editNode(prevComments, commentId, content));
+  };
+
+  const deleteNode = (nodes, commentId) => {
+    return nodes.reduce((acc, node) => {
+      if (node.id === commentId) {
+        return acc;
+      } else if (node.replies && node.replies.length > 0) {
+        node.replies = deleteNode(node.replies, commentId);
+      }
+      return [...acc, node];
+    }, []);
+  };
+
+  const deleteComment = (commentId) => {
+    setComments((prevComments) => deleteNode(prevComments, commentId));
+  };
   return {
     comments,
     insertComment,
+    editComment,
+    deleteComment,
   };
 };
 
