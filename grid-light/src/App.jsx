@@ -56,7 +56,7 @@ function App() {
         style={{ gridTemplateColumns: `repeat(${config[0].length}, 1fr)` }}
       >
         {config.flat().map((value, index) => {
-          return value === 1 ? (
+          return value ? (
             <Cell
               key={index}
               index={index}
